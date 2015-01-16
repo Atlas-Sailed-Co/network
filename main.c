@@ -8,7 +8,7 @@
 
 #define C 2
 #define N 9
-#define T 100 // Simulate for 100 time Steps
+#define T 30 // Simulate for 100 time Steps
 //#define TIGGERFILE 
 
 struct node {
@@ -138,18 +138,26 @@ int main (void) {
 	for(t = 0; t < T; t++) {
 		// Send information into the system
 		// Right now all the info is already generated in the earler section of code.
-		// printf("%d %d\n",t,t);
+		printf("%d \n",t);
 		for(i = 0; i < N; i++) {
 			// Update the state of the nodes.
 			if ( happeningEvents[t][i] ) {
-				//printf("Happened!\n");
+				printf("Happened!\n");
 				if (nodes[i].bufferFill < nodes[i].bufferSize ) {
 					nodes[i].buffer[nodes[i].bufferFill] = t;
 					nodes[i].bufferFill++;
 				} else {
 					nodes[i].overFlow = 1;
 				}
-			} 
+			}
+
+			// If there is a trigger event request for the prior time, then begin moving the data out
+			if(t > 0) {
+				if( triggerEvents[t-1][i]) {
+					printf("The data from Node %d at time %d should move out.\n",i,t-1);
+					printf("The data is: %d\n", nodes[i].buffer[nodes[i].bufferFill] ); // This is currently zeros... thats not right.
+				}
+			}
 
 		}
 		// Write data out of the system
